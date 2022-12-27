@@ -2,7 +2,6 @@ package com.example.securdemo.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.Parameter;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -22,13 +21,13 @@ import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.FETCH_SIZE_PARAM;
 import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.SEQUENCE_PARAM;
 
 @Entity
+@Access(AccessType.FIELD)
 @Table(name = Pet.TABLE_NAME)
 public class Pet extends AbstractBaseEntity<Long> {
     public static final String TABLE_NAME = "pet";
@@ -65,13 +64,13 @@ public class Pet extends AbstractBaseEntity<Long> {
 
     @Setter
     @Getter
-    @ManyToOne
-    @JoinColumn(name = "type_id")
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "type_id", nullable = false)
     private PetType type;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id", nullable = false)
-    @OrderBy("visit_date ASC")
+    @OrderBy("date ASC")
     private Set<Visit> visits = new LinkedHashSet<>();
 
     public Collection<Visit> getVisits() {
@@ -79,19 +78,7 @@ public class Pet extends AbstractBaseEntity<Long> {
     }
 
     public void addVisit(final Visit visit) {
-        getVisits().add(visit);
+        this.getVisits().add(visit);
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Pet pet = (Pet) o;
-        return getId() != null && Objects.equals(getId(), pet.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

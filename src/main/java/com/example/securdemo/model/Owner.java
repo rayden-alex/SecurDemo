@@ -2,7 +2,6 @@ package com.example.securdemo.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Access;
@@ -19,12 +18,12 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.FETCH_SIZE_PARAM;
 import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.SEQUENCE_PARAM;
 
 @Entity
+@Access(AccessType.FIELD)
 @Table(name = Owner.TABLE_NAME)
 public class Owner extends AbstractBaseEntity<Long> {
     public static final String TABLE_NAME = "owners";
@@ -84,7 +83,7 @@ public class Owner extends AbstractBaseEntity<Long> {
 
     public void addPet(final Pet pet) {
         if (pet.isNew()) {
-            getPets().add(pet);
+            this.getPets().add(pet);
         }
     }
 
@@ -92,16 +91,4 @@ public class Owner extends AbstractBaseEntity<Long> {
 
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Owner owner = (Owner) o;
-        return getId() != null && Objects.equals(getId(), owner.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

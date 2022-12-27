@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+<!--    https://github.com/marschall/hibernate-batch-sequence-generator-->
+<!--    For the best possible performance the CACHE value of the database sequence-->
+<!--    should be set to the same value as the BatchSequenceGenerator "fetch_size" parameter.-->
+
+    <changeSet id="1672162170635-1" author="rayden">
+        <alterSequence sequenceName="owners_id_sequence" cacheSize="20"/>
+    </changeSet>
+    <changeSet id="1672162170635-2" author="rayden">
+        <alterSequence sequenceName="pet_id_sequence" cacheSize="20"/>
+    </changeSet>
+    <changeSet id="1672162170635-3" author="rayden">
+        <alterSequence sequenceName="pet_type_id_sequence" cacheSize="20"/>
+    </changeSet>
+    <changeSet id="1672162170635-4" author="rayden">
+        <alterSequence sequenceName="visit_id_sequence" cacheSize="20"/>
+    </changeSet>
+
+</databaseChangeLog>

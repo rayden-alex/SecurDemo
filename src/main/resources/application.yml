@@ -1,1 +1,31 @@
+# Spring
+spring:
+  jpa:
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
 
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/pet_clinic}
+    username: ${POSTGRES_USER:pet_clinic_admin}
+    password: ${POSTGRES_PASS:123}
+
+  liquibase:
+    enabled: true
+    drop-first: false
+    change-log: classpath:db/changelog/liquibase-changelog.xml
+    default-schema: public
+
+
+
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

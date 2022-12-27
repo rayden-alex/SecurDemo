@@ -2,7 +2,6 @@ package com.example.securdemo.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.Parameter;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,12 +13,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
-import java.util.Objects;
 
 import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.FETCH_SIZE_PARAM;
 import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.SEQUENCE_PARAM;
 
 @Entity
+@Access(AccessType.FIELD)
 @Table(name = Visit.TABLE_NAME)
 public class Visit extends AbstractBaseEntity<Long> {
     public static final String TABLE_NAME = "visit";
@@ -61,16 +60,4 @@ public class Visit extends AbstractBaseEntity<Long> {
         this.date = LocalDate.now();
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Visit visit = (Visit) o;
-        return getId() != null && Objects.equals(getId(), visit.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

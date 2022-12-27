@@ -12,13 +12,13 @@ import java.io.Serializable;
  */
 @MappedSuperclass
 @Access(AccessType.FIELD)
-public class AbstractBaseEntity<ID extends Serializable> extends AbstractIdentified<ID> {
+public class AbstractBaseEntity<ID extends Serializable> extends AbstractVersionedIdentifiable<ID> {
 
     @Id
     @BatchSequenceGenerator
     @Access(AccessType.PROPERTY)
     @Override
-    @Column(name = Identified.ID_FIELD)
+    @Column(name = Identifiable.ID_FIELD, updatable = false, nullable = false)
     public ID getId() {
         return super.getId();
     }

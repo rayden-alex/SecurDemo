@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="1672162170634-1" author="rayden">
+        <createSequence incrementBy="1" sequenceName="owners_id_sequence" startValue="1"/>
+    </changeSet>
+    <changeSet id="1672162170634-2" author="rayden">
+        <createSequence incrementBy="1" sequenceName="pet_id_sequence" startValue="1"/>
+    </changeSet>
+    <changeSet id="1672162170634-3" author="rayden">
+        <createSequence incrementBy="1" sequenceName="pet_type_id_sequence" startValue="1"/>
+    </changeSet>
+    <changeSet id="1672162170634-4" author="rayden">
+        <createSequence incrementBy="1" sequenceName="visit_id_sequence" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="1672162170634-5" author="rayden">
+        <createTable tableName="owners">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_owners"/>
+            </column>
+            <column name="version" type="BIGINT"/>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="city" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1672162170634-6" author="rayden">
+        <createTable tableName="pet">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pet"/>
+            </column>
+            <column name="version" type="BIGINT"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="birth_date" type="DATE"/>
+            <column name="type_id" type="BIGINT"/>
+            <column name="owner_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1672162170634-7" author="rayden">
+        <createTable tableName="pet_type">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pet_type"/>
+            </column>
+            <column name="version" type="BIGINT"/>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1672162170634-8" author="rayden">
+        <createTable tableName="visit">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_visit"/>
+            </column>
+            <column name="version" type="BIGINT"/>
+            <column name="date" type="DATE"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="pet_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1672162170634-10" author="rayden">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="pet" constraintName="FK_PET_ON_OWNER"
+                                 referencedColumnNames="id" referencedTableName="owners"/>
+    </changeSet>
+    <changeSet id="1672162170634-11" author="rayden">
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="pet" constraintName="FK_PET_ON_TYPE"
+                                 referencedColumnNames="id" referencedTableName="pet_type"/>
+
+        <createIndex indexName="IDX_PET_ON_TYPE" tableName="pet">
+            <column name="type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1672162170634-12" author="rayden">
+        <addForeignKeyConstraint baseColumnNames="pet_id" baseTableName="visit" constraintName="FK_VISIT_ON_PET"
+                                 referencedColumnNames="id" referencedTableName="pet"/>
+    </changeSet>
+
+</databaseChangeLog>
