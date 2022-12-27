@@ -33,7 +33,7 @@ public class Owner extends AbstractBaseEntity<Long> {
     @BatchSequenceGenerator(
             name = "ownersIdSequence",
             parameters = {
-                    @Parameter(name = SEQUENCE_PARAM, value = "owners_id_seq"),
+                    @Parameter(name = SEQUENCE_PARAM, value = "owners_id_sequence"),
                     @Parameter(name = FETCH_SIZE_PARAM, value = "20")
             }
     )

@@ -28,7 +28,7 @@ public class Visit extends AbstractBaseEntity<Long> {
     @BatchSequenceGenerator(
             name = "visitIdSequence",
             parameters = {
-                    @Parameter(name = SEQUENCE_PARAM, value = "visit_id_seq"),
+                    @Parameter(name = SEQUENCE_PARAM, value = "visit_id_sequence"),
                     @Parameter(name = FETCH_SIZE_PARAM, value = "20")
             }
     )
