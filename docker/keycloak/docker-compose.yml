@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15.1
+    env_file:
+      - ./keycloak-postgres.env
+    container_name: keycloak-db
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./docker-compose-keycloak/postgresql_data:/var/lib/postgresql/data
+    networks:
+      - keycloak-network
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:20.0.2
+    restart: unless-stopped
+    env_file:
+      - ./keycloak-postgres.env
+    environment:
+      KC_FEATURES:
+        authorization
+        token-exchange
+        docker
+        impersonation
+        scripts
+        upload-scripts
+        web-authn
+        client-policies
+        dynamic-scopes
+    entrypoint: /opt/keycloak/bin/kc.sh start
+    volumes:
+      - ./docker-compose-keycloak/keycloak_data/server.crt.pem:/opt/keycloak/conf/server.crt.pem
+      - ./docker-compose-keycloak/keycloak_data/server.key.pem:/opt/keycloak/conf/server.key.pem
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    networks:
+      - keycloak-network
+    depends_on:
+      - postgres
+
+networks:
+  keycloak-network:
+    driver: bridge

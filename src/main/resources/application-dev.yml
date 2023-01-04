@@ -1,0 +1,6 @@
+# Main setting
+server:
+  port: ${PORT:80}
+  ssl:
+    enabled: false
+

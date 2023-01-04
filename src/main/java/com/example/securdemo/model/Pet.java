@@ -32,7 +32,7 @@ import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenc
 public class Pet extends AbstractBaseEntity<Long> {
     public static final String TABLE_NAME = "pet";
 
-    @Id
+//    @Id
     @BatchSequenceGenerator(
             name = "petIdSequence",
             parameters = {

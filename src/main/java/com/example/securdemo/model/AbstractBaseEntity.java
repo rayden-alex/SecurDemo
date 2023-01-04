@@ -14,11 +14,10 @@ import java.io.Serializable;
 @Access(AccessType.FIELD)
 public class AbstractBaseEntity<ID extends Serializable> extends AbstractVersionedIdentifiable<ID> {
 
-    @Id
-    @BatchSequenceGenerator
-    @Access(AccessType.PROPERTY)
+//    @Id
+//    @BatchSequenceGenerator
+//    @Access(AccessType.PROPERTY)
     @Override
-    @Column(name = Identifiable.ID_FIELD, updatable = false, nullable = false)
     public ID getId() {
         return super.getId();
     }

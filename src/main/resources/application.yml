@@ -1,13 +1,23 @@
-# Spring
+# Main setting
+server:
+  port: ${PORT:443}
+  servlet:
+    context-path: /pet-clinic # The root context path
+
+  ssl:
+    enabled: true
+    key-store-type: ${SSL_KEY_STORE_TYPE:PKCS12} # The format used for the keystore
+    key-store: classpath:${SSL_KEY_PATH:keystore/ssl_certificate.p12} # The path to the keystore containing the certificate
+    key-store-password: ${SSL_KEY_STORE_PASSWORD:123456} # The password used to generate the certificate
+    key-alias: pet-clinic-app-alias # The alias mapped to the certificate
+
+# Spring setting
 spring:
-  jpa:
-    show-sql: true
-    open-in-view: false
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+  application:
+    name: PetClinic Security Demo
+
+  #  profiles:
+#    active: dev
 
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/pet_clinic}
@@ -20,10 +30,52 @@ spring:
     change-log: classpath:db/changelog/liquibase-changelog.xml
     default-schema: public
 
+  jpa:
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        show_sql: true
+        format_sql: true
+
+
+  # https://www.baeldung.com/sso-spring-security-oauth2
+  # https://www.baeldung.com/spring-security-oauth-resource-server
+  # https://www.baeldung.com/spring-boot-security-autoconfiguration
+  # https://www.baeldung.com/spring-boot-https-self-signed-certificate
+  #
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            clientId: pet-clinic-frontend
+            client-secret: 45XXs3v8JxhjhLBioocA4bS5P6GG1Z4u
+            authorization-grant-type: authorization_code
+            scope: openid,email,profile
+            redirect-uri: https://myhost.local/pet-clinic
+
+        provider:
+          keycloak:
+            issuer-uri: https://mydebian.local:8443/realms/PetClinicRearm
+            authorization-uri: https://mydebian.local:8443/realms/PetClinicRearm/protocol/openid-connect/auth
+            token-uri: https://mydebian.local:8443/realms/PetClinicRearm/protocol/openid-connect/token
+            user-info-uri: https://mydebian.local:8443/realms/PetClinicRearm/protocol/openid-connect/userinfo
+            jwk-set-uri: https://mydebian.local:8443/realms/PetClinicRearm/protocol/openid-connect/certs
+
+            user-name-attribute: preferred_username
+
+#      resourceserver:
+#        jwt:
+#          issuer-uri: https://mydebian.local:8443/realms/PetClinicRearm
+#          jwk-set-uri: https://mydebian.local:8443/realms/PetClinicRearm/protocol/openid-connect/certs
 
 
 
-# Actuator
+# Actuator setting
 management:
   endpoints:
     web:

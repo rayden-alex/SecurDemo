@@ -6,6 +6,7 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -38,6 +39,7 @@ import java.util.Objects;
 @Access(AccessType.FIELD)
 public abstract class AbstractIdentifiable<ID extends Serializable> implements Identifiable<ID> {
     @Id
+    @Column(name = Identifiable.ID_FIELD, updatable = false, nullable = false)
     private ID id;
 
     /**
