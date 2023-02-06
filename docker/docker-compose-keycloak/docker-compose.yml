@@ -3,8 +3,12 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15.1
+
+    # With the "env_file" option you can specify a file with variables to be injected
+    # into the environment in the container.
     env_file:
       - ./keycloak-postgres.env
+
     container_name: keycloak-db
     restart: unless-stopped
     ports:
@@ -13,6 +17,12 @@ services:
       - /docker-compose-keycloak/postgresql_data:/var/lib/postgresql/data
     networks:
       - keycloak-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_HEALTH_USER}" ]
+      start_period: 3s
+      interval: 30s
+      timeout: 5s
+      retries: 5
 
   keycloak:
 #    hostname: mydebian.local
