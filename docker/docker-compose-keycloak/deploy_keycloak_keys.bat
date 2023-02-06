@@ -1,0 +1,1 @@
+"c:\Program Files\PuTTY\pscp.exe" -pw 123 -r .\docker\docker-compose-keycloak\keycloak_data rayden@localhost:/docker-compose-keycloak
