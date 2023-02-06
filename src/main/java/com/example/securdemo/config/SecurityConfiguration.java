@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
@@ -30,8 +31,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf
-                .disable())
+            .csrf(AbstractHttpConfigurer::disable)
             .authorizeRequests(authorizeRequests -> authorizeRequests
                 .antMatchers("/api/**").permitAll() // TODO
                 .antMatchers("/users/registration", "/v3/api-docs/**", "/swagger-ui" +

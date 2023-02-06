@@ -8,13 +8,14 @@ services:
     container_name: keycloak-db
     restart: unless-stopped
     ports:
-      - '5432:5432'
+      - '55432:5432'
     volumes:
-      - ./docker-compose-keycloak/postgresql_data:/var/lib/postgresql/data
+      - /docker-compose-keycloak/postgresql_data:/var/lib/postgresql/data
     networks:
       - keycloak-network
 
   keycloak:
+#    hostname: mydebian.local
     container_name: keycloak
     image: quay.io/keycloak/keycloak:20.0.2
     restart: unless-stopped
@@ -33,8 +34,8 @@ services:
         dynamic-scopes
     entrypoint: /opt/keycloak/bin/kc.sh start
     volumes:
-      - ./docker-compose-keycloak/keycloak_data/server.crt.pem:/opt/keycloak/conf/server.crt.pem
-      - ./docker-compose-keycloak/keycloak_data/server.key.pem:/opt/keycloak/conf/server.key.pem
+      - /docker-compose-keycloak/keycloak_data/server.crt.pem:/opt/keycloak/conf/server.crt.pem
+      - /docker-compose-keycloak/keycloak_data/server.key.pem:/opt/keycloak/conf/server.key.pem
     ports:
       - "8080:8080"
       - "8443:8443"
