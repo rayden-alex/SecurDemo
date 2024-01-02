@@ -1,14 +1,16 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.7.7'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version '3.2.1'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
 
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
@@ -24,7 +26,8 @@ repositories {
 }
 
 ext {
-    mapStructVersion = "1.5.3.Final"
+    mapStructVersion = "1.5.5.Final"
+    lombokVersion = "1.18.30"
     lombokMapstructBindingVersion = "0.2.0"
 }
 
@@ -40,15 +43,15 @@ dependencies {
 
     implementation 'org.liquibase:liquibase-core'
 
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     runtimeOnly 'org.postgresql:postgresql'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    testAnnotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     // https://github.com/marschall/hibernate-batch-sequence-generator
     implementation 'com.github.marschall:hibernate-batch-sequence-generator:2.0.3'
@@ -62,6 +65,10 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// How to add java compiler options
+// compileJava.options.compilerArgs.addAll(Arrays.asList('-Xlint:deprecation', '-Xlint:unchecked'))
+// compileJava.options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
 
 compileJava {
     options.compilerArgs += [
