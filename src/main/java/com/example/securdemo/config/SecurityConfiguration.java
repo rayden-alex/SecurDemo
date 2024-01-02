@@ -8,12 +8,20 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.example.securdemo.config.Role.ADMIN;
 
@@ -32,17 +40,18 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
-            .authorizeRequests(authorizeRequests -> authorizeRequests
-                .antMatchers("/api/**").permitAll() // TODO
-                .antMatchers("/users/registration", "/v3/api-docs/**", "/swagger-ui" +
-                    "/**").permitAll()
-                .antMatchers("/users/{\\d+}/delete").hasAuthority(ADMIN.getAuthority())
-                .antMatchers("/admin/**").hasAuthority(ADMIN.getAuthority())
+            .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
+                .requestMatchers("/api/**").permitAll() // TODO
+                .requestMatchers("/users/registration", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .requestMatchers("/users/{\\d+}/delete").hasAuthority(ADMIN.getAuthority())
+                .requestMatchers("/admin/**").hasAuthority(ADMIN.getAuthority())
                 .anyRequest().authenticated()
             )
 //            .oauth2Login(login -> login
 //                .defaultSuccessUrl("/"))
-            .oauth2Login().and()
+            .oauth2Login((oauth2Login) -> oauth2Login
+                .userInfoEndpoint((userInfo) -> userInfo.userAuthoritiesMapper(grantedAuthoritiesMapper())
+                ))
             .logout(logout -> logout
                 .addLogoutHandler(this.keycloakLogoutHandler)
                 .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
@@ -50,6 +59,24 @@ public class SecurityConfiguration {
                 .permitAll());
 
         return http.build();
+    }
+
+    private GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
+        return (authorities) -> authorities.stream().map(authority -> {
+                GrantedAuthority mappedAuthority;
+
+                if (authority instanceof final OidcUserAuthority userAuthority) {
+                    mappedAuthority = new OidcUserAuthority("ROLE_USER", userAuthority.getIdToken(),
+                        userAuthority.getUserInfo());
+                } else if (authority instanceof final OAuth2UserAuthority userAuthority) {
+                    mappedAuthority = new OAuth2UserAuthority("ROLE_USER", userAuthority.getAttributes());
+                } else {
+                    mappedAuthority = authority;
+                }
+
+                return mappedAuthority;
+            }
+        ).collect(Collectors.toSet());
     }
 
     /**

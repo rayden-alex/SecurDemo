@@ -19,7 +19,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @GenericGenerator(
         name = "",
-        strategy = "com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator",
+        type = com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.class,
         parameters = {
                 @Parameter(name = SEQUENCE_PARAM, value = ""),
                 @Parameter(name = FETCH_SIZE_PARAM, value = "20")
