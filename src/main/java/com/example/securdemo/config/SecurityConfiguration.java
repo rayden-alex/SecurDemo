@@ -19,8 +19,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.securdemo.config.Role.ADMIN;
@@ -62,21 +60,17 @@ public class SecurityConfiguration {
     }
 
     private GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
-        return (authorities) -> authorities.stream().map(authority -> {
-                GrantedAuthority mappedAuthority;
+        return (authorities) -> authorities.stream().map(this::mapGrantedAuthority).collect(Collectors.toSet());
+    }
 
-                if (authority instanceof final OidcUserAuthority userAuthority) {
-                    mappedAuthority = new OidcUserAuthority("ROLE_USER", userAuthority.getIdToken(),
-                        userAuthority.getUserInfo());
-                } else if (authority instanceof final OAuth2UserAuthority userAuthority) {
-                    mappedAuthority = new OAuth2UserAuthority("ROLE_USER", userAuthority.getAttributes());
-                } else {
-                    mappedAuthority = authority;
-                }
-
-                return mappedAuthority;
-            }
-        ).collect(Collectors.toSet());
+    private GrantedAuthority mapGrantedAuthority(final GrantedAuthority authority) {
+        return switch (authority) {
+            case OidcUserAuthority userAuthority -> new OidcUserAuthority("ROLE_USER", userAuthority.getIdToken(),
+                userAuthority.getUserInfo());
+            case OAuth2UserAuthority userAuthority ->
+                new OAuth2UserAuthority("ROLE_USER", userAuthority.getAttributes());
+            case null, default -> authority;
+        };
     }
 
     /**
