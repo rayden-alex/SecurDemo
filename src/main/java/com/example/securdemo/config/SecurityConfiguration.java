@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.stream.Collectors;
@@ -41,7 +42,7 @@ public class SecurityConfiguration {
             .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
                 .requestMatchers("/api/**").permitAll() // TODO
                 .requestMatchers("/users/registration", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                .requestMatchers("/users/{\\d+}/delete").hasAuthority(ADMIN.getAuthority())
+                .requestMatchers(RegexRequestMatcher.regexMatcher("/users/\\d+/delete")).hasAuthority(ADMIN.getAuthority())
                 .requestMatchers("/admin/**").hasAuthority(ADMIN.getAuthority())
                 .anyRequest().authenticated()
             )
