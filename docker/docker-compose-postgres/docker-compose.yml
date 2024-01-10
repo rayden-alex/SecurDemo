@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  # See also https://habr.com/ru/post/578744/
+  postgres:
+    image: postgres:15.1
+
+    # With the "env_file" option you can specify a file with variables to be injected
+    # into the environment in the container.
+    env_file:
+      - ./postgres.env
+
+    container_name: pet-clinic-db
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    volumes:
+      - /docker-compose-postgres/postgresql_data:/var/lib/postgresql/data
+
+    healthcheck:
+      # We must use the "CMD-SHELL" take advantage of variable substitution or features like "|" and ">"
+      test: [ "CMD-SHELL", "pg_isready" ]
+      start_period: 10s
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
