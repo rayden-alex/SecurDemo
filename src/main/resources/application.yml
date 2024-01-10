@@ -53,7 +53,7 @@ spring:
         registration:
           keycloak:
             clientId: pet-clinic-frontend
-            client-secret: 45XXs3v8JxhjhLBioocA4bS5P6GG1Z4u
+            client-secret: r67cduXvFgakfMyJbg0xYtBni5Uzx5hR
             authorization-grant-type: authorization_code
             scope: openid,email,profile
             redirect-uri: https://myhost.local/pet-clinic
